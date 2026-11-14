@@ -1,9 +1,15 @@
 #!/usr/bin/env zsh
-# Color codes
+# megayeet: full system upgrade.
+#           Update flake inputs -> rebuild -> commit everything -> push to GitHub.
+
 CYAN='\033[1;36m'
-NC='\033[0m'
 PURPLE='\033[1;35m'
+GREEN='\033[1;32m'
 RED='\033[1;31m'
+NC='\033[0m'
+
+REPO=/etc/nixos
+UPDATE_LOG=/tmp/megayeet-update.log
 
 # --- PRINT SYSTEM INFO --------------------------------------------------------
 echo -e "${CYAN}Current NixOS version:${NC}"
@@ -14,13 +20,12 @@ echo -e "${CYAN}Currently running NixOS generation:${NC}"
 readlink /nix/var/nix/profiles/system | cut -d '-' -f 2
 sleep 0.3
 
-echo -e "${CYAN}...which was built at:${NC}"
+echo -e "${CYAN}...which was activated at:${NC}"
 stat -c '%y' /run/current-system
 sleep 0.3
 
-# Show flake inputs
-NIXURL=$(grep 'nixpkgs.url' /etc/nixos/flake.nix | cut -d '"' -f 2)
-HMURL=$(grep 'home-manager.url' /etc/nixos/flake.nix | cut -d '"' -f 2)
+NIXURL=$(grep 'nixpkgs.url' $REPO/flake.nix | cut -d '"' -f 2)
+HMURL=$(grep 'home-manager.url' $REPO/flake.nix | cut -d '"' -f 2)
 echo -e "${CYAN}Current flake inputs:${NC}"
 echo -e "\033[1m Nixpkgs:      \033[0m $NIXURL"
 echo -e "\033[1m Home-manager: \033[0m $HMURL"
@@ -34,26 +39,32 @@ sleep 0.3
 # Runs as YOU, not root. Fetching inputs and rewriting flake.lock needs no
 # privileges as long as you own /etc/nixos. Running it under doas is what let
 # root wander into ~/.cache/nix and trip libgit2's ownership check.
+cd $REPO || { echo -e "${RED}cannot cd to $REPO${NC}"; exit 1; }
+
+if [[ ! -w flake.lock ]]; then
+  echo -e "${RED}flake.lock is not writable by $USER.${NC}"
+  echo -e "Fix once with:  doas chown -R $USER:users $REPO"
+  exit 1
+fi
+
 echo -e "${PURPLE}Updating flake inputs...${NC}"
-cd /etc/nixos || { echo -e "${RED}cannot cd to /etc/nixos.${NC}"; exit 1; }
-
-if [ ! -w flake.lock ]; then
-    echo -e "${RED}flake.lock is not writable by $USER.${NC}"
-    echo -e "Fix once with:  doas chown -R $USER:users /etc/nixos"
-    exit 1
+nix flake update 2>&1 | tee $UPDATE_LOG
+if (( pipestatus[1] != 0 )); then
+  echo -e "${RED}flake update failed.${NC}"
+  exit 1
 fi
 
-if ! nix flake update; then
-    echo -e "${RED}flake update failed.${NC}"
-    exit 1
+# nix prints "• Updated input 'x':" followed by "→ 'new-url' (date)" for each change
+CHANGES=$(grep -E "Updated input|→" $UPDATE_LOG)
+if [[ -n $CHANGES ]]; then
+  echo -e "${CYAN}Updated inputs:${NC}"
+  print -r -- "$CHANGES"
+else
+  echo -e "${CYAN}All inputs already up to date.${NC}"
 fi
 
-echo -e "${CYAN}Updated packages:${NC}"
-git diff flake.lock | grep -E '(Updated input|→)' | head -10
-
-# Stage changes but don't commit yet
-git add .
-
+# Stage everything (new files included) so the flake can see it
+git add -A
 echo -e "\e[3m~ Flake updated successfully ~\e[0m"
 sleep 0.3
 
@@ -61,9 +72,10 @@ sleep 0.3
 # Still needs root (activation writes /nix/var/nix/profiles and /run).
 # Root's fetcher cache now lives in /root/.cache thanks to the doas setEnv fix.
 echo -e "${PURPLE}Rebuilding system in-place with flake...${NC}"
-if ! doas nixos-rebuild switch --flake /etc/nixos; then
-    echo -e "${RED}nixos-rebuild failed.${NC}"
-    exit 1
+if ! doas nixos-rebuild switch --flake $REPO; then
+  echo -e "${RED}nixos-rebuild failed - nothing committed or pushed.${NC}"
+  echo -e "To go back to the previous inputs:  git -C $REPO checkout HEAD -- flake.lock"
+  exit 1
 fi
 
 echo -e "${CYAN}System generation count:${NC}"
@@ -73,19 +85,28 @@ doas nix-env --list-generations --profile /nix/var/nix/profiles/system | wc -l
 echo -e "${CYAN}Disk usage summary:${NC}"
 df -h | grep -v 'tmpfs' | grep -v 'efi'
 
-# --- GIT SYNC (only after successful rebuild) ---------------------------------
-if ping -c 1 -W 2 github.com >/dev/null 2>&1; then
-    echo -e "${PURPLE}Syncing /etc/nixos to GitHub...${NC}"
-    git commit -m "auto commit during system upgrade: $(date '+%Y-%m-%d %H:%M:%S')" 2>/dev/null || true
-    git pull --rebase origin main 2>/dev/null || true
+# --- GIT SYNC (only after a successful rebuild) -------------------------------
+echo -e "${PURPLE}Syncing $REPO to GitHub...${NC}"
+git add -A
 
-    if git push -u origin main 2>/dev/null; then
-        echo -e "${CYAN}Git sync complete.${NC}"
-    else
-        echo -e "${CYAN}Git sync failed (check connection).${NC}"
-    fi
+if git diff --cached --quiet; then
+  echo -e "${CYAN}No changes to commit.${NC}"
 else
-    echo -e "${CYAN}Git sync skipped (GitHub unreachable).${NC}"
+  git commit -q -F - <<EOF
+System upgrade $(date '+%Y-%m-%d %H:%M')
+
+$CHANGES
+EOF
+  if (( $? != 0 )); then
+    echo -e "${RED}Commit failed.${NC}"
+    exit 1
+  fi
+fi
+
+if git push -q; then
+  echo -e "${GREEN}Git sync complete.${NC}"
+else
+  echo -e "${PURPLE}Push failed - the commit is saved locally; it will go up on the next push.${NC}"
 fi
 
 # --- DONE ---------------------------------------------------------------------
