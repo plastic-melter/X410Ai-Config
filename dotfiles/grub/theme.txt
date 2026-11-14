@@ -1,0 +1,27 @@
+title-text: ""
+desktop-image: "background.png"
+desktop-color: "#000000"
+terminal-font: "Terminus Regular 22"
+terminal-box: "terminal_box_*.png"
+terminal-left: "0"
+terminal-top: "0"
+terminal-width: "100%"
+terminal-height: "100%"
+terminal-border: "0"
+
++ boot_menu {
+  left = 39%
+  top = 38%
+  width = 27%
+  height = 31%
+  item_font = "Ubuntu Regular 43"
+  item_color = "#cccccc"
+  selected_item_color = "#eeeeff"
+  icon_width = 77
+  icon_height = 77
+  item_icon_space = 41
+  item_height = 100
+  item_padding = 6
+  item_spacing = 18
+  selected_item_pixmap_style = "select_*.png"
+}

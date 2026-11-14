@@ -1,0 +1,207 @@
+{
+  "position": "top",
+  "layer": "top",
+  "height": 33,
+  "margin-top": 1,
+  "margin-bottom": 0,
+  "margin-left": 0,
+  "margin-right": 0,
+  "modules-left": [
+    "custom/launcher",
+    "tray",
+    "clock",
+    "custom/worldclock",
+    "pulseaudio",
+    "backlight",
+    "custom/gamma-brightness",
+    "custom/gamma-warmth",
+    "custom/mpris",
+  ],
+  "modules-center": [
+    "hyprland/workspaces"
+  ],
+  "modules-right": [
+    "network",
+    "cpu",
+    "custom/hwpower",
+    "custom/cooling",
+    "custom/nvidia",
+    "custom/memory",
+    "custom/disk",
+    "custom/power",
+    "battery"
+  ],
+"clock": {
+  "timezone": "America/Los_Angeles",
+  "format": "  {:%m/%d}",
+  "format-alt": "{:%A, %B %d, %Y (%R)}",
+  "tooltip-format": "<tt><small>{calendar}</small></tt>",
+  "calendar": {
+    "mode"          : "year",
+    "mode-mon-col"  : 3,
+    "weeks-pos"     : "right",
+    "on-scroll"     : 1,
+    "format": {
+      "months":     "<span color='#ffead3'><b>{}</b></span>",
+      "days":       "<span color='#ecc6d9'><b>{}</b></span>",
+      "weeks":      "<span color='#99ffdd'><b>W{}</b></span>",
+      "weekdays":   "<span color='#ffcc66'><b>{}</b></span>",
+      "today":      "<span color='#ff6699'><b><u>{}</u></b></span>"
+    }
+  },
+  "actions": {
+    "on-click-right": "mode",
+    "on-scroll-up": "shift_up",
+    "on-scroll-down": "shift_down"
+  }
+},
+  "hyprland/workspaces": {
+    "active-only": false,
+    "all-outputs": true,
+    "disable-scroll": false,
+    "on-scroll-up": "hyprctl dispatch 'hl.dsp.focus({ workspace = [[e-1]] })'",
+    "on-scroll-down": "hyprctl dispatch 'hl.dsp.focus({ workspace = [[e+1]] })'",
+    "format": "{icon}",
+    "on-click": "activate",
+    "format-icons": {
+      "1": "1",
+      "2": "2",
+      "3": "3",
+      "4": "4",
+      "5": "5",
+      "6": "6",
+      "7": "7",
+      "8": "8",
+      "9": "9",
+    },
+    "sort-by-number": true
+  },
+  "custom/mpris": {
+    "exec": "/etc/nixos/dotfiles/scripts/mpris.sh",
+    "return-type": "json",
+    "max-length": 30,
+    "on-click-middle": "playerctl play-pause",
+    "on-click": "playerctl previous",
+    "on-click-right": "playerctl next"
+  },
+  "custom/worldclock": {
+    "format": "{}",
+    "exec": "/etc/nixos/dotfiles/scripts/worldclock.sh",
+    "on-click": "/etc/nixos/dotfiles/scripts/worldclock.sh toggle & pkill -RTMIN+8 waybar",
+    "signal": 8,
+    "interval": 5
+  },
+  "battery": {
+    "states": {
+      "good": 90,
+      "warning": 30,
+      "critical": 15
+    },
+    "format": "{icon} {capacity}%",
+    "format-charging": "󰂄 {capacity}%",
+    "format-plugged": "󰂄 {capacity}%",
+    "format-alt": "󱧦 {time}",
+    "format-icons": ["󰁺 ", "󰁼 ", "󰁾 ", "󰂀 ", "󰁹 "],
+    "interval": 30
+  },
+  "cpu": {
+    "format": "󰓅  {usage}%",
+    "format-alt": "󰓅  {avg_frequency} GHz",
+    "interval": 3
+  },
+  "custom/hwpower": {
+    "format": "{}",
+    "exec": "/etc/nixos/dotfiles/scripts/hwpower.sh",
+    "on-click": "/etc/nixos/dotfiles/scripts/power-toggle.sh",
+    "interval": 3
+  },
+  "custom/refreshrate": {
+    "format": "󰍹  {}Hz",
+    "exec": "hyprctl -j monitors | jq -r '.[] | select(.name==\"eDP-1\") | .refreshRate|round'",
+    "interval": "once",
+    "signal": 10,
+    "on-click": "/etc/nixos/dotfiles/scripts/display.zsh hz",
+    "tooltip": true,
+    "tooltip-format": "Left: cycle 60/120/165"
+  },
+  "network": {
+    "format-wifi": "󰤨",
+    "format-ethernet": "󰈀  {ifname}",
+    "format-linked": "󰈀  {ifname} (No IP)",
+    "format-disconnected": "󰤭",
+    "format-alt": "󰜷 {bandwidthUpBytes}  󰜮 {bandwidthDownBytes}",
+    "tooltip-format": "{essid} {ifname}: {ipaddr}/{cidr}"
+  },
+  "tray": {
+    "icon-size": 28,
+    "spacing": 5
+  },
+  "backlight": {
+    "format": " {percent}%",
+    "format-icons": ["", "", "", "", "", "", "", "", ""],
+    "tooltip-format": "",
+    "on-click": "/etc/nixos/dotfiles/scripts/brightnessctl.sh down",
+    "on-click-right": "/etc/nixos/dotfiles/scripts/brightnessctl.sh up",
+    "on-click-middle": "/etc/nixos/dotfiles/scripts/gamma-toggle.sh"
+  },
+  "custom/gamma-brightness": {
+    "format": "{}",
+    "exec": "/etc/nixos/dotfiles/scripts/gamma-brightness.sh",
+    "interval": "once",
+    "signal": 11,
+    "on-click":        "/etc/nixos/dotfiles/scripts/gamma-brightness.sh down",
+    "on-click-right":  "/etc/nixos/dotfiles/scripts/gamma-brightness.sh up",
+    "on-click-middle": "/etc/nixos/dotfiles/scripts/gamma-brightness.sh reset"
+  },
+  "custom/gamma-warmth": {
+    "format": "{}",
+    "exec": "/etc/nixos/dotfiles/scripts/gamma-warmth.sh",
+    "interval": "once",
+    "signal": 12,
+    "on-click":        "/etc/nixos/dotfiles/scripts/gamma-warmth.sh down",
+    "on-click-right":  "/etc/nixos/dotfiles/scripts/gamma-warmth.sh up",
+    "on-click-middle": "/etc/nixos/dotfiles/scripts/gamma-warmth.sh toggle"
+  },
+  "pulseaudio": {
+    "format": "󰕾  {volume}%",
+    "format-muted": "󰝟",
+    "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
+    "on-click-middle": "/etc/nixos/dotfiles/scripts/audio-toggle.sh",
+    "on-click-right": "pavucontrol",
+    "scroll-step": 5
+  },
+  "custom/launcher": {
+    "format": "󱄅",
+    "on-click": "nwg-menu -va \"top\" ",
+    "tooltip": false
+  },
+  "custom/power": {
+    "format": "{}",
+    "exec": "/etc/nixos/dotfiles/scripts/watts.sh",
+    "interval": 3,
+    "signal": 13,
+    "on-click": "power-toggle"
+  },
+  "custom/cooling": {
+    "format": "󰏈  {}",
+    "exec": "/etc/nixos/dotfiles/scripts/cooling.sh",
+    "on-click": "/etc/nixos/dotfiles/scripts/cooling.sh toggle & pkill -RTMIN+9 waybar",
+    "signal": 9,
+    "interval": 3
+  },
+  "custom/nvidia": {
+    "format": "{}",
+    "exec": "/etc/nixos/dotfiles/scripts/nvidia.sh",
+    "interval": 1
+  },
+  "custom/disk": {
+    "exec": "/etc/nixos/dotfiles/scripts/disk.sh",
+    "return-type": "json",
+    "interval": 5
+  },
+  "custom/memory": {
+    "exec": "/etc/nixos/dotfiles/scripts/memory.sh",
+    "return-type": "json",
+    "interval": 3
+  }
+}

@@ -1,0 +1,55 @@
+window {
+    background-color: rgba(__BG_RGB__, 0.92);
+    border-radius: 20px;
+    border: 1px solid #__BORDER__;
+}
+box button {
+    padding: 2px 14px;
+    min-height: 0;
+    border-radius: 8px;
+    background-color: rgba(__BG_ALT_RGB__, 0.12);
+    border: 1px solid transparent;
+    color: #__TEXT_DIM__;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+box button:hover {
+    background-color: rgba(__ACCENT_RGB__, 0.22);
+    border: 1px solid #__BORDER_ACTIVE__;
+    color: #__TEXT__;
+}
+box button:active,
+box button:checked {
+    background-color: rgba(__ACCENT_RGB__, 0.35);
+    border: 1px solid #__BORDER_ACTIVE2__;
+    color: #__TEXT__;
+}
+flowboxchild > button {
+    border-radius: 10px;
+    background-color: rgba(__BG_ALT_RGB__, 0.12);
+    border: 1px solid transparent;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+flowboxchild > button:hover {
+    background-color: rgba(__ACCENT_RGB__, 0.22);
+    border: 1px solid #__BORDER_ACTIVE__;
+}
+flowboxchild > button:active {
+    background-color: rgba(__ACCENT_RGB__, 0.38);
+}
+flowboxchild > button label {
+    color: #__TEXT_DIM__;
+    font-size: 12px;
+}
+flowboxchild > button:hover label {
+    color: #__TEXT__;
+}
+entry {
+    background-color: rgba(__BG_ALT_RGB__, 0.85);
+    border: 2px solid #__BORDER_ACTIVE__;
+    border-radius: 12px;
+    color: #__TEXT__;
+    padding: 4px 12px;
+}
+entry:focus {
+    border-color: #__BORDER_ACTIVE2__;
+}

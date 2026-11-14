@@ -1,0 +1,145 @@
+* {
+    border: none;
+    border-radius: 0px;
+    font-family: FontAwesome, "Noto Sans CJK"; 
+    font-size: 16px;
+    font-style: normal;
+    min-height: 0;
+}
+window#waybar {
+    background: rgba(__BG_RGB__, 0.00);
+    border-bottom: 0px;
+    color: #__TEXT__;
+}
+#workspaces {
+    background-color: rgba(__BG_RGB__, 0.85);
+    color: #__TEXT__;
+    padding: 3px 12px;
+    margin: 0px 3px;
+    border-radius: 8px;
+    border-bottom: 2px solid #__BORDER__;
+}
+#workspaces button {
+    padding: 0px 5px;
+    margin: 2px 4px;
+    border-radius: 6px;
+    color: #__TEXT_DIM__;
+    background-color: transparent;
+    transition: all 0.2s ease;
+    border: 1px solid #__BORDER__;
+}
+#workspaces button.active { 
+    color: #__BG__;
+    background: linear-gradient(135deg, #__BORDER__, #__ACCENT__);
+    border: 1px solid #__BORDER_ACTIVE__;
+}
+#workspaces button:hover {
+    background-color: #__SURFACE__;
+}
+/* Per-module icon colors — themed (identity + 50% toward BORDER_ACTIVE2) */
+#clock { color: #__MOD_CLOCK__; }
+#custom-worldclock { color: #__MOD_WORLDCLOCK__; }
+#custom-egpu { color: #__MOD_WORLDCLOCK__; }
+#custom-cooling { color: #__MOD_COOLING__; }
+#custom-nvidia { color: #__MOD_NVIDIA__; }
+#battery { color: #__MOD_BATTERY__; }
+#battery.warning:not(.charging) { color: #__MOD_BATTERY_WARN__; }
+#battery.critical:not(.charging) { color: #__MOD_BATTERY_CRIT__; }
+#battery.charging { color: #__MOD_BATTERY_CHARGE__; padding: 0px 15px; }
+#network { color: #__MOD_NETWORK__; }
+#network.disconnected { color: #__MOD_NETWORK_DISC__; }
+#pulseaudio { color: #__MOD_PULSEAUDIO__; }
+#pulseaudio.muted { color: #__TEXT__; }
+#cpu { color: #__MOD_CPU__; }
+#custom-memory { color: #__MOD_MEMORY__; }
+#temperature { color: #__MOD_TEMP__; }
+#temperature.critical { color: #__MOD_TEMP_CRIT__; }
+#backlight { color: #__MOD_REFRESHRATE__; }
+#custom-gamma-brightness { color: #__MOD_BACKLIGHT__; }
+#custom-gamma-warmth { color: #__MOD_BACKLIGHT__; }
+#custom-refreshrate { color: #__MOD_REFRESHRATE__; }
+#custom-power { color: #__MOD_POWER__; }
+#custom-disk { color: #__MOD_DISK__; }
+
+/* Shared background/border for all modules */
+#clock, #battery, #network, #pulseaudio, #temperature, #cpu, #custom-memory, #mpris, #custom-mpris,
+#custom-disk, #custom-refreshrate, #custom-hwpower, #custom-power, #custom-cooling, #custom-egpu,
+#tray, #custom-worldclock, #backlight, #custom-playerctl, #custom-playerlabel, #custom-nvidia,
+#custom-gamma-brightness, #custom-gamma-warmth {
+    background-color: rgba(__BG_RGB__, 0.9);
+    border-radius: 8px;
+    padding: 0px 15px;
+    margin: 0px 3px;
+    border-bottom: 2px solid #__BORDER__;
+}
+#custom-playerctl {
+    font-size: 24px;
+    padding: 0px 10px 0px 17px;
+    color: #__MOD_PLAYERCTL__;
+}
+#custom-playerlabel.Paused {
+  opacity: 0.5;
+  font-style: italic;
+}
+#custom-mpris.paused {
+    opacity: 0.85;
+}
+#custom-mpris.playing {
+    opacity: 1.0;
+}
+#mpris.paused {
+  opacity: 0.75;
+  font-style: italic;
+}
+#mpris.stopped {
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font-size: 0;
+}
+#custom-launcher {
+    color: #__MOD_LAUNCHER__;
+    background-color: rgba(__BG_RGB__, 0.9);
+    border-radius: 8px;
+    margin: 0px 3px;
+    padding: 0px 12px 0px 7px;
+    min-width: 40px;
+    font-size: 24px;
+    border-bottom: 2px solid #__BORDER__;
+}
+#window {
+    background: rgba(__BG_RGB__, 0.9);
+    padding: 0px 20px;
+    border-radius: 8px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    font-weight: normal;
+    font-style: normal;
+    border-bottom: 2px solid #__BORDER__;
+    color: #__TEXT__;
+}
+#custom-wf-recorder {
+    padding: 0px 15px;
+    color: #__MOD_RECORDER__;
+    background-color: rgba(__BG_RGB__, 0.9);
+    border-radius: 8px;
+    margin: 0px 3px;
+    border-bottom: 2px solid #__BORDER__;
+}
+#custom-hyprpicker {
+    background-color: rgba(__BG_RGB__, 0.9);
+    border-radius: 8px;
+    margin: 0px 3px;
+    padding: 0px 15px;
+    font-weight: bold;
+    border-bottom: 2px solid #__BORDER__;
+    color: #__TEXT__;
+}
+#taskbar {
+    padding: 0px 4px;
+    margin: 0px 15px;
+    border-radius: 10px;
+    background: rgba(__BG_RGB__, 0.9);
+    border: 1px solid #__BORDER__;
+}
