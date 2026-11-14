@@ -766,6 +766,10 @@ programs = {
       rm = "trash-put"; # system-wide safety
     };
   };
+  git = {
+    enable = true;
+    config.safe.directory = "/etc/nixos";
+  };
   dconf.enable = true;
   seahorse.enable = true;
   gamescope.enable = true;

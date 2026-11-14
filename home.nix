@@ -226,6 +226,11 @@ programs = {
     };
   };
 
+  gh = {
+    enable = true;
+    gitCredentialHelper.enable = true;
+  };
+
   mangohud = {
     enable = true;
     settings = {
